@@ -120,6 +120,11 @@ const setup = async () => {
         _id: 'blog',
         title: 'Blog',
         state: 'Published',
+      },
+      {
+        _id: 'blog-post',
+        title: 'Blog Post',
+        state: 'Published',
       }
     ]
 

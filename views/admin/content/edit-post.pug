@@ -89,7 +89,9 @@ block content
 
           blockData.post_content = $('#post-editor').summernote('code');
 
-          console.log(blockData);
+          blockData.html = $('#post-editor').summernote('code');
+
+          blockData.text = = $("#post-editor").code().replace(/<\/?[^>]+(>|$)/g, "");
 
           if(blockData.title.length < 3) {
             let errorMessage = 'A title that contains more than 3 characters is required.'
