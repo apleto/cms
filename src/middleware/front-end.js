@@ -225,6 +225,7 @@ module.exports = {
 
       const images = await app.service('api/images').find();
       const forms  = await app.service('api/forms').find();
+      const posts = await app.service('api/posts').find();
 
       
       const echo = (text) => {
@@ -246,7 +247,7 @@ module.exports = {
 
 
         // //res.render('front-end/base', { site_title, has_home_page });
-        var html = fn({ site_title, has_home_page, echo, images, image, forms: forms.data, post })
+        var html = fn({ site_title, has_home_page, echo, images, image, forms: forms.data, post, posts })
         res.send(html)
   
 
@@ -273,12 +274,12 @@ module.exports = {
 
       // get site settings
       const site_title = await app.service('api/settings').get('site_title');
-      const site_home_page = await app.service('api/settings').get('home_page');
+      const blog_page = await app.service('api/settings').get('blog_page');
       const site_header = await app.service('api/settings').get('header_content_block');
 
       // get content blocks
       const header = await app.service('api/content-blocks').get(site_header.value);
-      const page = await app.service('api/pages').get(site_home_page.value);
+      const page = await app.service('api/pages').get(blog_page.value);
 
       // get page sections
       const sections = await app.service('api/page-sections').find({
@@ -302,6 +303,8 @@ module.exports = {
       const images = await app.service('api/images').find();
       const forms  = await app.service('api/forms').find();
 
+      const posts = await app.service('api/posts').find();
+
       
       const echo = (text) => {
         return text;
@@ -322,7 +325,7 @@ module.exports = {
 
 
         // //res.render('front-end/base', { site_title, has_home_page });
-        var html = fn({ site_title, has_home_page, echo, images, image, forms: forms.data })
+        var html = fn({ site_title, has_home_page, echo, images, image, forms: forms.data, posts })
         res.send(html)
   
 
