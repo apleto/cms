@@ -1,0 +1,36 @@
+extends ../base
+
+block content
+  .row
+    .col
+
+      
+      
+  .row.mt-2.p-3.h-75
+    .col
+
+      .card.h-100
+        .card-header
+          .row.mb-1
+            .col
+              label Page Title
+              input.form-control.mb-1#content-title(type="text", name="title", placeholder="Title")
+          .row
+            .col
+              .form-group
+                label Parent Page
+                select.form-control.mb-1#content-parent
+                  option(value=null) No Parent
+                  each p, i in pages.data
+                    option(value=p._id) #{p.title}
+            .col
+              label Tags
+              input.form-control.tag-input(type="text")
+              
+
+        .card-body.m-0.p-0
+          #editor
+        .card-footer
+
+          button.btn.btn-primary.w-100#save-content Save
+    //.col-2

@@ -1,0 +1,54 @@
+extends ../base
+block content
+  //- .row.mt-2.pl-3
+  //-   .col
+  //-     h2 Content Management
+  .row.mt-2.p-3
+    .col
+      .card
+        .card-header
+          ul.nav.nav-pills#content-tabs
+            li.nav-item
+              a.nav-link.active#pages-tab(data-toggle='tab', data-admin-page='content', data-content-tab='pages', href='#pages') Pages
+            li.nav-item
+              a.nav-link#posts-tab(data-toggle='tab', data-admin-page='content', data-content-tab='posts', href='#posts') Posts
+            li.nav-item
+              a.nav-link#content-blocks-tab(data-toggle='tab', data-admin-page='content', data-content-tab='content-blocks', href='#content-blocks') Content Blocks
+            li.nav-item
+              a.nav-link#forms-tab(data-toggle='tab', data-admin-page='content', data-content-tab='forms', href='#forms') Forms
+
+            li.nav-item
+              a.nav-link#comments-tab(data-toggle='tab', data-admin-page='content', data-content-tab='comments', href='#comments') Comments
+
+            li.nav-item
+              a.nav-link#images-tab(data-toggle='tab', data-admin-page='content', data-content-tab='images', href='#images') Images
+            //- li.nav-item.dropdown
+            //-   a.nav-link.dropdown-toggle(data-toggle='dropdown', href='#', role='button', aria-haspopup='true', aria-expanded='false') Dropdown
+            //-   .dropdown-menu
+            //-     a.dropdown-item(href='#') Action
+            //-     a.dropdown-item(href='#') Another action
+            //-     a.dropdown-item(href='#') Something else here
+            //-     .dropdown-divider
+            //-     a.dropdown-item(href='#') Separated link
+        .card-body
+          #tabContent.tab-content
+            #pages.tab-pane.fade.active.show
+              include pages
+            #posts.tab-pane.fade
+              include posts
+            #content-blocks.tab-pane.fade
+              include content-blocks
+            #forms.tab-pane.fade
+              include forms
+            #comments.tab-pane.fade
+              include comments
+            #images.tab-pane.fade
+              include images
+        .card-footer
+          button.btn.btn-primary.w-100#create-content Create
+
+
+
+
+
+

@@ -1,0 +1,28 @@
+doctype html
+html(lang='en')
+  block layout
+    head
+      block head
+        meta(charset='utf-8')
+        title= site_title.value
+
+      block styles
+
+      block scripts
+      //- Javascripts
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js', integrity='sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=', crossorigin='anonymous')
+      script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js", integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM", crossorigin="anonymous")
+      script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/core-js/2.1.4/core.min.js')
+      script(src='//unpkg.com/@feathersjs/client@^3.0.0/dist/feathers.js')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js', integrity='sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=', crossorigin='anonymous')
+      script(src='/assets/js/front-end.js')
+
+      body
+        block body
+
+          if(!has_home_page)
+            h1 It looks like you do not have a home page for you site...
+            h2 You can create one using the 
+              a(href="/admin") Admin Portal.
+          block content
+

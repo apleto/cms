@@ -1,0 +1,56 @@
+style.
+  .dropzone {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed;
+  }
+
+  .dz-message {
+    text-align: center;
+    margin-top: 80px;
+  }
+
+.row
+  .col
+    form#my-awesome-dropzone.dropzone(action='/uploads')
+
+.row.mt-5
+  .col
+    #image-library
+      .row
+        each image, i in images.data
+          .col-2.mb-3         
+            img(src=image.file_path, style="max-width: 100px;")
+            //- | #{image.name}
+
+script.
+  const reader  = new FileReader();
+  Dropzone.options.myAwesomeDropzone = {
+    paramName: "files", // The name that will be used to transfer the file
+    maxFilesize: 2, // MB
+    //- autoProcessQueue: false,
+    accept: function(file, done) {
+      if (file.name == "justinbieber.jpg") {
+        done("Naha, you don't.");
+      }
+      else { done(); }
+    },
+    //- init: function() {
+    //-   this.on("thumbnail", function(file) {
+    //-     try {
+    //-       client.service('api/images').create({
+    //-         name: file.name,
+    //-         size: file.size,
+    //-         type: file.type,
+    //-         height: file.height,
+    //-         width: file.width,
+    //-         uri: file.dataURL
+    //-       })
+    //-     }
+    //-     catch(error) {
+
+    //-     }
+    //-   })
+    //- },
+
+  };

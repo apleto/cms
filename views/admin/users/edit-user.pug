@@ -1,0 +1,74 @@
+extends ../base
+
+block content
+
+  .row.mt-3
+    .col
+
+      .alert.alert-dismissible.alert-success.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Success!
+        span.ml-2#success-message  adf
+
+      .alert.alert-dismissible.alert-danger.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Error!
+        span.ml-2#error-message  adf
+
+
+  .row.mt-3
+    .col
+      form.form#edit-user-form(name="create-user-form", user-id=user._id)
+        .card
+          .card-header
+            h4.mb-0 Edit User
+          .card-body
+
+            .form-group
+              label Role
+              select.form-control(name="role")
+                each r, i in roles.data
+                  if(r._id == user.role)
+                    option(value=r._id) #{r.name}
+                  if(r._id != user.role)
+                    option(value=r._id) #{r.name}
+
+            .form-group
+              label First Name
+              input.form-control(type="text" name="first_name", value=user.first_name)
+
+            .form-group
+              label Last Name
+              input.form-control(type="text" name="last_name", value=user.last_name)
+
+            .form-group
+              label Email
+              input.form-control(type="email" name="email", value=user.email)
+
+          .card-footer
+            button.btn.btn-primary.w-100(type="submit")
+              i.fa.fa-save
+
+  script.
+    $(document).ready( async () => {
+      const userForm = $('#edit-user-form');
+
+      userForm.on('submit', async (e) => {
+        e.preventDefault();
+
+        try {
+          const id = e.currentTarget.attributes['user-id'].value;
+          
+          await client.service('users').patch(id, userForm.serializeJSON());
+          $('#success-message').html('Your changes were saved.');
+          $('.alert-success').show();
+        }
+        catch (error) {
+
+          $('#error-message').html(error);
+
+          $('.alert-danger').show();
+
+        }
+      })
+    })

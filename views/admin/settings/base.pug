@@ -1,0 +1,69 @@
+extends ../base
+
+block content
+
+  .row.mt-3
+    .alert
+    .col
+      form.form#settings-form(name="settings-form")
+        .card
+          .card-header
+
+            h2.pb-0.mb-0 Settings
+
+          .card-body.m-0.p-0
+
+            .alert.alert-success.m-0.rounded-0.hide#success-message
+              //- button.close(type='button', data-dismiss='alert') ×
+              strong Success!  
+              |  your changes have been saved.
+
+            .alert.alert-danger.m-0.rounded-0.hide#success-message
+              //- button.close(type='button', data-dismiss='alert') ×
+              strong OH SNAP!  
+              |  something went wrong saving your changes.
+            
+            table.table.table-striped.table-hover
+              thead
+                tr
+                  th(style="width: 100px;") Setting
+                  th Value
+              tbody
+                each s, i in settings.data
+                  tr
+                    td
+                      | #{s._id}
+                      p.small= s.info
+                    td
+                      input.form-control(name=s._id, value=s.value)
+
+          .card-footer
+            button.btn.btn-primary.w-100#save-settings(type="submit") Save Settings
+
+
+  script.
+    $(document).ready( async () => {
+      $('#settings-form').on('submit', async (e) => {
+        e.preventDefault();
+
+        const settings = $('#settings-form').serializeJSON();
+
+
+        try {
+          for (const [key, value] of Object.entries(settings)) {
+            await client.service('api/settings').patch(key, { value })
+          }
+
+          $('.alert-success').show();
+        }
+        catch(error) {
+
+          $('.alert-error').show();
+
+        }
+
+
+
+        
+      })
+    })

@@ -1,0 +1,131 @@
+extends ../base
+
+block content
+
+  .row.mt-3
+    .col
+
+      .alert.alert-dismissible.alert-success.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Success!
+        span.ml-2#success-message  adf
+
+      .alert.alert-dismissible.alert-danger.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Error!
+        span.ml-2#error-message  adf
+
+  .row.mt-3
+    .col
+      form.form#add-content-block-form(name="add-content-block-form")
+        .card
+          .card-header
+            | Create Content Block
+          .card-body
+            .row
+              .col
+
+                .form-group
+                  label Title
+                  input.form-control#title(name="title", placeholder="")
+
+              .col
+                .form-group
+                  label ID
+                  input.form-control#id(name="_id" readonly)
+
+            #pug-content-block-editor
+              .card.mt-3
+                .card-header
+                  | Pug Template
+                .card-body.m-0.p-0(style="height: 90%;")
+                    #pug-editor
+          .card-footer
+            button.btn.btn-primary.w-100(type="submit") Save Content Block
+
+  .row.mt-3
+    .col
+      .card
+        .card-header Images
+        .card-body
+          include images
+
+
+  script.
+
+    const loadEditors = async () => {
+      //- pugTemplateEditor = CodeMirror(document.getElementById('pug-editor'), {
+      //-   value: "// Your code here\n",
+      //-   mode:  "pug",
+      //-   indentUnit: 2,
+      //-   //smartIndent: true,
+      //-   lineNumbers: true
+      
+      //- });  
+
+      pugTemplateEditor = monaco.editor.create(document.getElementById('pug-editor'), {
+      language: 'pug'
+      });
+
+      pugTemplateEditor.getModel().updateOptions({ tabSize: 2 })
+
+      return;
+    }
+    $( document ).ready( async () => {
+      
+      await loadEditors();
+
+      $('#title').on('keyup', () => {
+        let title = $('#title').val().toLowerCase();
+        
+        let id = title.split(' ').join('-');
+      
+        $('#id').val(id);
+
+      });
+
+        $('#add-content-block-form').on('submit', async (e) => {
+
+          e.preventDefault();
+
+          const blockData = $('#add-content-block-form').serializeJSON();
+
+          blockData.pug_template = await pugTemplateEditor.getValue();
+
+          if(blockData.title.length < 3) {
+            let errorMessage = 'A title that contains more than 3 characters is required.'
+
+            $('.alert-danger').show()
+            $('#error-message').html(errorMessage)
+          } else {
+
+            const check = await client.service('api/content-blocks').find({
+              query: {
+                _id: blockData._id
+              }
+            })
+
+            if(check.total == 0) {
+              const contentBlock = await client.service('api/content-blocks').create(blockData);
+              $('.alert-danger').hide()
+              $('.alert-success').show();
+              $('#success-message').html('The content block has been saved.');
+            }
+            else {
+
+              let errorMessage = `A content block with the title <strong>${blockData.title}</strong> already exists`;
+
+              $('.alert-danger').show();
+              $('#error-message').html(errorMessage);
+
+            }
+
+
+
+          }
+
+
+
+        });
+
+    });

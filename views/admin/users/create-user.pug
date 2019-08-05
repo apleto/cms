@@ -1,0 +1,81 @@
+extends ../base
+
+block content
+
+  .row.mt-3
+    .col
+
+      .alert.alert-dismissible.alert-success.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Success!
+        span.ml-2#success-message  adf
+
+      .alert.alert-dismissible.alert-danger.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Error!
+        span.ml-2#error-message  adf
+
+
+  .row.mt-3
+    .col
+      form.form#create-user-form(name="create-user-form")
+        .card
+          .card-header
+            h4.mb-0 Create User
+          .card-body
+
+            .form-group
+              label Role
+              select.form-control(name="role")
+                each r, i in roles.data
+                  option(value=r._id) #{r.name}
+
+            .form-group
+              label First Name
+              input.form-control(type="text" name="first_name")
+
+            .form-group
+              label Last Name
+              input.form-control(type="text" name="last_name")
+
+            .form-group
+              label Email
+              input.form-control(type="email" name="email")
+
+            .form-group
+              label Password
+              input.form-control(type="password" name="password")
+
+          .card-footer
+            button.btn.btn-primary.w-100(type="submit")
+              i.fa.fa-save
+
+  script.
+    $(document).ready( async () => {
+      const userForm = $('#create-user-form');
+
+      userForm.on('submit', async (e) => {
+        e.preventDefault();
+        const data = userForm.serializeJSON();
+
+        if(!data.email || !data.password) {
+          const error = 'The email and password fields are required to create a new user!'
+          $('#error-message').html(error);
+
+          $('.alert-danger').show();
+        } else {
+          try {
+            await client.service('users').create();
+            $('#success-message').html('The user was created');
+            $('.alert-success').show();
+          }
+          catch (error) {
+
+            $('#error-message').html(error);
+
+            $('.alert-danger').show();
+
+          }
+        }
+      })
+    })

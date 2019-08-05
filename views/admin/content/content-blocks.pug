@@ -1,0 +1,25 @@
+.alert.alert-primary
+  //- button.close(type='button', data-dismiss='alert') ×
+  strong Content Blocks  
+  |  are snippets of code or static text that are used to create pages.
+.row
+  .col
+
+    table.table.table-hover.table-striped
+      thead
+        tr
+          th Title
+          th Created
+          th Updated
+          th Status
+      tbody
+        each p, i in content_blocks.data
+          //- -
+          //-   p.updated = moment(p.updated)
+          //- - p.updated = moment(p.updated).format('LLL')
+          tr
+            td
+              a(href=`/admin/content/content-blocks/edit/` + p._id) #{p.title}
+            td= p.created
+            td= p.updated
+            td= p.status

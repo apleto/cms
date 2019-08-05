@@ -1,0 +1,22 @@
+.alert.alert-primary
+  //- button.close(type='button', data-dismiss='alert') ×
+  strong Forms  
+  |  allow you to collect information form visitors to your site.
+
+.row
+  .col
+
+    table.table.table-hover.table-striped
+      thead
+        tr
+          th Title
+          th Responses
+      tbody
+        each p, i in forms.data
+          //- -
+          //-   p.updated = moment(p.updated)
+          //- - p.updated = moment(p.updated).format('LLL')
+          tr
+            td
+              a(href=`/admin/content/forms/edit/` + p._id) #{p.title}
+            td= p.responses.total

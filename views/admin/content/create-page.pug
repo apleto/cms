@@ -1,0 +1,27 @@
+extends ../base
+
+block content
+  .row.mt-2
+    .col-12
+      form.form#create-page-form(name="create-page-form")
+        .card
+          .card-header
+            .row
+              .col-6
+                input.form-control#page-title(type="text", name="title" placeholder="Title")
+              .col-6
+                input.form-control#page-id.readonly(type="text", name="_id" placeholder="ID", readonly)
+          .card-body
+            button.btn.w-100.btn-primary(type="submit") Create Page
+            //- page header content block
+            //- .card
+            //-   .card-header
+            //-     | Header Content Block
+            //- sections
+
+            //- new sectio
+          
+
+    .col-3
+
+  script(src="/assets/js/create-page.js")

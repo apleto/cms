@@ -1,0 +1,18 @@
+extends base
+
+block content
+  #login-container.p-3
+    .row
+      .col-md-6.offset-3
+        form.form#login-form(name="login")
+          .card
+            .card-header
+              .title Please Login
+            .card-body
+              .form-group
+                input.form-control(type="email", name="email", placeholder="Email")
+              .form-group.mb-0
+                input.form-control(type="password", name="password", placeholder="Password")
+              //- input.form-control.hidden(type="hidden", value="local", name="strategy")
+            .card-footer
+              button.btn.btn-primary.w-100(type="submit") Login

@@ -1,0 +1,151 @@
+extends ../base
+
+block content
+  .row.mt-3
+    .col
+
+      .alert.alert-dismissible.alert-success.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Success!
+        span.ml-2#success-message  adf
+
+      .alert.alert-dismissible.alert-danger.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Error!
+        span.ml-2#error-message  adf
+  .row.mt-3
+    .col-12
+      .card
+        .card-header
+          .row
+            .col-6
+              .form-group
+                label Title
+                input.form-control#page-title(type="text", name="title", value=page.title, placeholder="Title")
+            .col-6
+              .form-group
+                label ID
+                input.form-control#page-id.readonly(type="text", name="_id", value=page._id, placeholder="ID", readonly)
+        .card-body
+          //- page header content block
+          //- .card
+          //-   .card-header
+          //-     | Header Content Block
+          //- sections
+
+          //- new section
+          button.btn.btn-primary.w-100.mb-3#add-section-button Add Section
+
+          form.form#add-section-form.mb-3.hide(name="add-section-form")
+            .card
+              .card-header
+                .row
+                  .col-10
+                    | Add Section
+                  .col-2
+              .card-body
+
+                input.form-control.mb-3.hide(type="text", name="title", placeholder="Section Title")
+
+                //- section type select
+
+                select.form-control.mb-3#section-type(name="type")
+                  option(value="false") Select a section type
+                  option(value="content-block") Existing Content Block
+                  option(value="new-content-block") New Content Block
+
+                //- content block
+
+                select.form-control#new-section-content-block.hide.mb-3(name="block")
+                  option(value="false") Select a content block
+                  each b, i in content_blocks.data
+                    option(value=b._id) #{b.title}
+                //- section order
+                input.form-control.mb-3.hide#section-order(type="number", name="display_order", placeholder="Page Display Order")
+
+                #new-custom-content-editor
+                  .card.mt-3
+                    .card-header
+                      | New Content Block
+                    .card-body.m-0.p-0(style="height: 90%;")
+                        #new-section-editor
+
+
+
+              .card-footer
+                button.btn.btn-primary.w-100#add-section(type="submit") Save Section
+          //- Current Sections
+          ul.list-group#page-sections
+            each section, i in sections.data
+              li.list-group-item(id=section._id)
+                .row
+                  .col-4
+                    if(section.type == 'content-block')
+                      .section-title #{section.block.title}
+                  .col-2.text-right
+                    | Order:
+                  .col-3
+                    input.form-control.form-control-sm.section-order(type="number", id=section._id, value=section.display_order)
+                  .col-1
+                    .badge.badge-success.hide(id=section._id)
+                      i.fa.fa-check
+                  .col-2.text-right
+                    .btn-group(role="group")
+                      //- button.btn.move-section-up(data-section-id=section._id)
+                      //-   i.fa.fa-arrow-up
+                      //- button.btn.move-section-down(data-section-id=section._id)
+                      //-   i.fa.fa-arrow-down
+                      button.btn.delete-section(data-section-id=section._id)
+                        i.fa.fa-trash
+
+
+          //- page metadata
+          .card
+            .card-header
+              .title Metadata
+            .card-body
+        //- main page footer
+        .card-footer
+          button.btn.btn-primary.w-100(type="submit") Save Page
+          //- .form-control
+          
+
+    //- .col-3
+    //-   .row
+    //-     .col
+    //-       .card
+    //-         .card-header Details
+    //-         .card-body
+    //-           table.w-100
+    //-             tr
+    //-               th Status:
+    //-               td= page.status
+    //-             tr
+    //-               th Publish(ed):
+    //-               th= page.published_on
+    //-             tr
+    //-               th Created:
+    //-               td= page.created
+    //-             tr
+    //-               th Created by:
+    //-               td
+    //-                 | #{page.created_by.first_name} #{page.created_by.last_name}
+    //-             tr
+    //-               th Updated:
+    //-               td= page.created
+    //-             tr
+    //-               th Updated by:
+    //-               td
+    //-                 | #{page.updated_by.first_name} #{page.updated_by.last_name}
+      //- .row.mt-3
+      //-   .col
+      //-     .card
+      //-       .card-header Media
+      //-       .card-body
+      //-         .row
+      //-           each image, i in media.images.data
+      //-             .col-4.mb-3
+      //-               img(src=image.file_path, style="max-width: 50px;")
+
+
+  script(src="/assets/js/edit-page.js")

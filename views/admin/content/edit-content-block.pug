@@ -1,0 +1,137 @@
+extends ../base
+
+block content
+
+  .row.mt-3
+    .col
+
+      .alert.alert-dismissible.alert-success.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Success!
+        span.ml-2#success-message  adf
+
+      .alert.alert-dismissible.alert-danger.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Error!
+        span.ml-2#error-message  adf
+
+  .row.mt-3
+    .col
+      form.form#edit-content-block-form(name="edit-content-block-form")
+        .card
+          .card-header
+            | Content Blocks / #{ block.title }
+          .card-body
+            .row
+              .col
+
+                .form-group
+                  label Title
+                  input.form-control#title(name="title", placeholder="", value=block.title)
+
+              .col
+                .form-group
+                  label ID
+                  input.form-control#id(name="_id", value=block._id readonly)
+
+            #pug-content-block-editor
+              .card.mt-3
+                .card-header
+                  | Pug Template
+                .card-body.m-0.p-0(style="min-height: 90%;")
+                    #pug-editor
+          .card-footer
+            button.btn.btn-primary.w-100(type="submit") Save Content Block
+
+
+  .row.mt-3
+    .col
+      .card
+        .card-header Images
+        .card-body
+          include images
+
+  script.
+
+    const loadEditors = async (id) => {
+
+      const current = await client.service('api/content-blocks').get(id);
+
+      //console.log(current)
+
+      //- pugTemplateEditor = CodeMirror(document.getElementById('pug-editor'), {
+      //-   value: current.pug_template,
+      //-   mode:  "pug",
+      //-   indentUnit: 2,
+      //-   //smartIndent: true,
+      //-   lineNumbers: true
+      
+      //- });  
+
+
+      pugTemplateEditor = monaco.editor.create(document.getElementById('pug-editor'), {
+      value: [
+        current.pug_template
+      ].join('\\n'),
+      language: 'pug'
+      });
+
+      pugTemplateEditor.getModel().updateOptions({ tabSize: 2 })
+
+
+      return;
+    }
+    $( document ).ready( async () => {
+
+      const path = windowLocation.pathname;
+      let parts = path.split('/');
+      const id = parts[5];
+
+      await login();
+      
+      await loadEditors(id);
+
+      //- $('#title').on('keyup', () => {
+      //-   let title = $('#title').val().toLowerCase();
+        
+      //-   let id = title.split(' ').join('-');
+      
+      //-   $('#id').val(id);
+
+      //- });
+
+        $('#edit-content-block-form').on('submit', async (e) => {
+
+          e.preventDefault();
+
+          
+
+          const blockData = $('#edit-content-block-form').serializeJSON();
+
+          //- create version before patching
+
+          const currentData = await client.service('api/content-blocks').get(blockData._id);
+
+          currentData.content_block = currentData._id;
+
+          delete currentData._id;
+
+          await client.service('api/content-block-versions').create(currentData);
+
+          blockData.pug_template = await pugTemplateEditor.getValue();
+
+
+          await client.service('api/content-blocks').patch(blockData._id, blockData);
+
+          const successMessage = 'Your changes were saved.'
+
+          $('.alert-success').show();
+          $('#success-message').html(successMessage);
+
+
+
+
+
+        });
+
+    });

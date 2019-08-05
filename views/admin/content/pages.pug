@@ -1,0 +1,30 @@
+.row
+  .col
+    .alert.alert-primary
+      //- button.close(type='button', data-dismiss='alert') ×
+      strong Pages  
+      |  display content to users visitng your site.
+.row
+  .col
+
+    table.table.table-hover.table-striped
+      thead
+        tr
+          th Title
+          th Created
+          th Updated
+          th Status
+      tbody
+        each p, i in pages.data
+          //- -
+          //-   p.updated = moment(p.updated)
+          //- - p.updated = moment(p.updated).format('LLL')
+          tr
+            td
+              a(href=`/admin/content/pages/edit/` + p._id) #{p.title}
+            td= p.created
+            td= p.updated
+            td= p.status
+              
+        
+

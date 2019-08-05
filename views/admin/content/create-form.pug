@@ -1,0 +1,128 @@
+extends ../base
+
+block content
+
+  .row.mt-3
+    .col
+
+      .alert.alert-dismissible.alert-success.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Success!
+        span.ml-2#success-message  adf
+
+      .alert.alert-dismissible.alert-danger.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Error!
+        span.ml-2#error-message  adf
+
+  .row.mt-3
+    .col
+      form.form#add-form(name="add-form")
+        .card
+          .card-header
+            | Create Form
+          .card-body
+            .row
+              .col
+
+                .form-group
+                  label Title
+                  input.form-control#title(name="title", placeholder="")
+
+              .col
+                .form-group
+                  label ID
+                  input.form-control#id(name="_id" readonly)
+
+            #pug-content-block-editor
+              .card.mt-3
+                .card-header
+                  | Form Config (YAML)
+                .card-body.m-0.p-0(style="min-height: 90%;")
+                    #form-editor
+          .card-footer
+            button.btn.btn-primary.w-100(type="submit") Save form
+
+
+  script.
+
+    const loadEditors = async () => {
+      //- pugTemplateEditor = CodeMirror(document.getElementById('pug-editor'), {
+      //-   value: "// Your code here\n",
+      //-   mode:  "pug",
+      //-   indentUnit: 2,
+      //-   //smartIndent: true,
+      //-   lineNumbers: true
+      
+      //- });  
+
+      formEditor = monaco.editor.create(document.getElementById('form-editor'), {
+        language: 'yaml'
+      });
+
+      formEditor.getModel().updateOptions({ tabSize: 2 })
+
+
+      return;
+    }
+    $( document ).ready( async () => {
+      
+      await loadEditors();
+
+      $('#title').on('keyup', () => {
+        let title = $('#title').val().toLowerCase();
+        
+        let id = title.split(' ').join('-');
+      
+        $('#id').val(id);
+
+      });
+
+        $('#add-form').on('submit', async (e) => {
+
+          e.preventDefault();
+
+          const blockData = $('#add-form').serializeJSON();
+
+          blockData.yaml = await formEditor.getValue();
+
+          blockData.json = jsyaml.load(blockData.yaml);
+
+
+          if(blockData.title.length < 3) {
+            let errorMessage = 'A title that contains more than 3 characters is required.'
+
+            $('.alert-danger').show()
+            $('#error-message').html(errorMessage)
+          } else {
+
+            const check = await client.service('api/content-blocks').find({
+              query: {
+                _id: blockData._id
+              }
+            })
+
+            if(check.total == 0) {
+              const contentBlock = await client.service('api/forms').create(blockData);
+              $('.alert-danger').hide()
+              $('.alert-success').show();
+              $('#success-message').html('The form has been saved.');
+            }
+            else {
+
+              let errorMessage = `A form with the title <strong>${blockData.title}</strong> already exists`;
+
+              $('.alert-danger').show();
+              $('#error-message').html(errorMessage);
+
+            }
+
+
+
+          }
+
+
+
+        });
+
+    });

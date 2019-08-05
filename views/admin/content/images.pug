@@ -1,0 +1,196 @@
+style.
+  #drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    font-family: sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  #drop-area.highlight {
+    border-color: purple;
+  }
+  p {
+    margin-top: 0;
+  }
+  .my-form {
+    margin-bottom: 10px;
+  }
+  #gallery {
+    margin-top: 10px;
+  }
+  #gallery img {
+    width: 150px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .button {
+    display: inline-block;
+    padding: 10px;
+    background: #ccc;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  .button:hover {
+    background: #ddd;
+  }
+  #fileElem {
+    display: none;
+  }
+
+
+.row
+  .col
+    #drop-area
+      form.my-form
+        p
+          | Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region
+        input#fileElem(type='file', multiple='', accept='image/*', onchange='handleFiles(this.files)')
+        label.button(for='fileElem') Select some files
+      progress#progress-bar(max='100', value='0')
+      #gallery
+
+
+.row.mt-5
+  .col
+    #image-library
+      .row
+        each image, i in images.data
+          .col.mb-3
+            .card.text-center
+              img.card-img-top.imageLiquid(src=image.uri, style="height: 200px; width: 200px;")
+              .card-body
+                small.card-title= image.name
+            //- | #{image.name}
+
+script.
+  // ************************ Drag and drop ***************** //
+  let dropArea = document.getElementById("drop-area")
+
+  // Prevent default drag behaviors
+  ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false)   
+    document.body.addEventListener(eventName, preventDefaults, false)
+  })
+
+  // Highlight drop area when item is dragged over it
+  ;['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false)
+  })
+
+  ;['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false)
+  })
+
+  // Handle dropped files
+  dropArea.addEventListener('drop', handleDrop, false)
+
+  function preventDefaults (e) {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  function highlight(e) {
+    dropArea.classList.add('highlight')
+  }
+
+  function unhighlight(e) {
+    dropArea.classList.remove('active')
+  }
+
+  function handleDrop(e) {
+    var dt = e.dataTransfer
+    var files = dt.files
+
+    handleFiles(files)
+  }
+
+  let uploadProgress = []
+  let progressBar = document.getElementById('progress-bar')
+
+  function initializeProgress(numFiles) {
+    progressBar.value = 0
+    uploadProgress = []
+
+    for(let i = numFiles; i > 0; i--) {
+      uploadProgress.push(0)
+    }
+  }
+
+  function updateProgress(fileNumber, percent) {
+    uploadProgress[fileNumber] = percent
+    let total = uploadProgress.reduce((tot, curr) => tot + curr, 0) / uploadProgress.length
+    console.debug('update', fileNumber, percent, total)
+    progressBar.value = total
+  }
+
+  function handleFiles(files) {
+    files = [...files]
+    initializeProgress(files.length)
+    files.forEach(uploadFile)
+    files.forEach(previewFile)
+  }
+
+  function previewFile(file) {
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = function() {
+      let img = document.createElement('img')
+      img.src = reader.result
+      document.getElementById('gallery').appendChild(img)
+    }
+  }
+
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
+  async function uploadFile(file, i) {
+
+    console.log(file);
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+
+      let image = {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        uri: reader.result
+      }
+
+      image = await client.service('api/images').create(image);
+
+      console.log(image);
+    }
+
+    
+
+    //- var url = 'https://api.cloudinary.com/v1_1/joezimim007/image/upload'
+    //- var xhr = new XMLHttpRequest()
+    //- var formData = new FormData()
+    //- xhr.open('POST', url, true)
+    //- xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+
+    //- // Update progress (can be used to show progress indicator)
+    //- xhr.upload.addEventListener("progress", function(e) {
+    //-   updateProgress(i, (e.loaded * 100.0 / e.total) || 100)
+    //- })
+
+    //- xhr.addEventListener('readystatechange', function(e) {
+    //-   if (xhr.readyState == 4 && xhr.status == 200) {
+    //-     updateProgress(i, 100) // <- Add this
+    //-   }
+    //-   else if (xhr.readyState == 4 && xhr.status != 200) {
+    //-     // Error. Inform the user
+    //-   }
+    //- })
+
+    //- formData.append('upload_preset', 'ujpu6gyk')
+    //- formData.append('file', file)
+    //- xhr.send(formData)
+  }

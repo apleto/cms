@@ -1,0 +1,135 @@
+extends ../base
+
+block content
+
+  .row.mt-3
+    .col
+
+      .alert.alert-dismissible.alert-success.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Success!
+        span.ml-2#success-message  adf
+
+      .alert.alert-dismissible.alert-danger.hide
+        button.close(type='button', data-dismiss='alert') ×
+        strong Error!
+        span.ml-2#error-message  adf
+
+  .row.mt-3
+    .col
+      form.form#add-post-form(name="add-post-form")
+        .card
+          .card-header
+            | Edit Post
+          .card-body
+            .row
+              .col
+
+                .form-group
+                  label Title
+                  input.form-control#title(name="title", placeholder="", value=post.title)
+
+              .col
+                .form-group
+                  label ID
+                  input.form-control#id(name="_id", value=post._id readonly)
+
+            #pug-content-block-editor
+              .card.mt-3
+                .card-header
+                  | Content
+                .card-body.m-0.p-0(style="height: 90%;")
+                    #post-editor.summernote
+          .card-footer
+            button.btn.btn-primary.w-100(type="submit") Save Post
+
+
+  script.
+
+    const loadEditors = async (id) => {
+
+      const current = await client.service('api/posts').get(id);
+
+      $('#post-editor').summernote({
+        focus: true,
+        height: 400
+      });
+
+      $('#post-editor').summernote('code', current.post_content)
+
+
+
+
+      return;
+    }
+    $( document ).ready( async () => {
+      
+      const path = windowLocation.pathname;
+      let parts = path.split('/');
+      const id = parts[5];
+
+      await login();
+      
+      await loadEditors(id);
+
+      $('#title').on('keyup', () => {
+        let title = $('#title').val().toLowerCase();
+        
+        let id = title.split(' ').join('-');
+      
+        $('#id').val(id);
+
+      });
+
+        $('#add-post-form').on('submit', async (e) => {
+
+          e.preventDefault();
+
+          const blockData = $('#add-post-form').serializeJSON();
+
+          blockData.post_content = $('#post-editor').summernote('code');
+
+          console.log(blockData);
+
+          if(blockData.title.length < 3) {
+            let errorMessage = 'A title that contains more than 3 characters is required.'
+
+            $('.alert-danger').show()
+            $('#error-message').html(errorMessage)
+          } else {
+
+              const contentBlock = await client.service('api/posts').patch(blockData._id, blockData);
+              $('.alert-danger').hide()
+              $('.alert-success').show();
+              $('#success-message').html('The post has been saved.');
+
+            //- const check = await client.service('api/posts').find({
+            //-   query: {
+            //-     _id: blockData._id
+            //-   }
+            //- })
+
+            //- if(check.total == 0) {
+            //-   const contentBlock = await client.service('api/posts').create(blockData);
+            //-   $('.alert-danger').hide()
+            //-   $('.alert-success').show();
+            //-   $('#success-message').html('The post has been saved.');
+            //- }
+            //- else {
+
+            //-   let errorMessage = `A post with the title <strong>${blockData.title}</strong> already exists`;
+
+            //-   $('.alert-danger').show();
+            //-   $('#error-message').html(errorMessage);
+
+            //- }
+
+
+
+          }
+
+
+
+        });
+
+    });

@@ -1,0 +1,42 @@
+.auth-protected {
+  display: none;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+#editor {
+  height: calc(100%);
+}
+
+#editor-row { 
+  height: 100%;
+}
+
+.CodeMirror {
+  height: 100%
+}
+
+.bootstrap-tagsinput {
+  width: 100%;
+  border-radius: 0%;
+  padding: 6px
+}
+
+.tag {
+  padding: 5px;
+}
+
+.hide {
+  display: none;
+}
+
+#pug-editor {
+  min-height: 400px;
+}
+
+#form-editor {
+  min-height: 60vh;
+}

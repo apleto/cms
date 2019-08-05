@@ -1,0 +1,26 @@
+.alert.alert-primary
+  //- button.close(type='button', data-dismiss='alert') ×
+  strong Comments  
+  |  are from visitors to your site, you can review, approve, and respond to them here.
+
+.row
+  .col
+
+    table.table.table-hover.table-striped
+      thead
+        tr
+          th Subject
+          th From
+          th Created
+          th Status
+      tbody
+        each p, i in comments.data
+          //- -
+          //-   p.updated = moment(p.updated)
+          //- - p.updated = moment(p.updated).format('LLL')
+          tr
+            td
+              a(href=`/admin/content/pages/edit/` + p._id) #{p.subject}
+            td= p.created
+            td= p.from.email
+            td= p.status
