@@ -42,9 +42,13 @@ module.exports = {
       const site_title = await app.service('api/settings').get('site_title');
       const site_home_page = await app.service('api/settings').get('home_page');
       const site_header = await app.service('api/settings').get('header_content_block');
+      const site_footer = await app.service('api/settings').get('footer_content_block');
 
       // get content blocks
       const header = await app.service('api/content-blocks').get(site_header.value);
+      const footer = await app.service('api/content-blocks').get(site_footer.value);
+
+    
       const page = await app.service('api/pages').get(site_home_page.value);
 
 
@@ -66,12 +70,15 @@ module.exports = {
 
       pageContent = pageContent + header.pug_template
 
-      console.log(site_title);
     
 
       for ( var i in sections.data ) {
         pageContent = pageContent + '\n' + sections.data[i].block.pug_template;
       };
+
+
+      pageContent = pageContent + '\n' + footer.pug_template;
+
 
       const images = await app.service('api/images').find();
       const forms  = await app.service('api/forms').find();
@@ -123,9 +130,11 @@ module.exports = {
       const site_title = await app.service('api/settings').get('site_title');
       const site_home_page = await app.service('api/settings').get('home_page');
       const site_header = await app.service('api/settings').get('header_content_block');
+      const site_footer = await app.service('api/settings').get('footer_content_block');
 
       // get content blocks
       const header = await app.service('api/content-blocks').get(site_header.value);
+      const footer = await app.service('api/content-blocks').get(site_footer.value);
       
 
       pageContent = pageContent + header.pug_template
@@ -164,6 +173,8 @@ module.exports = {
           // const block = await app.service('api/content-blocks').get(sections.data[i].block);
           pageContent = pageContent + '\n' + sections.data[i].block.pug_template;
         };
+
+        pageContent = pageContent + '\n' + footer.pug_template;
         
         const fn = pug.compile(pageContent)
 
@@ -189,11 +200,13 @@ module.exports = {
       const site_title = await app.service('api/settings').get('site_title');
       const site_home_page = await app.service('api/settings').get('home_page');
       const site_header = await app.service('api/settings').get('header_content_block');
+      const site_footer = await app.service('api/settings').get('footer_content_block');
       const blog_post_page = await app.service('api/settings').get('blog_post_page');
 
       // get content blocks
       const header = await app.service('api/content-blocks').get(site_header.value);
       const page = await app.service('api/pages').get(blog_post_page.value);
+      const footer = await app.service('api/content-blocks').get(site_footer.value);
 
       // get page sections
       const sections = await app.service('api/page-sections').find({
@@ -226,6 +239,8 @@ module.exports = {
       const images = await app.service('api/images').find();
       const forms  = await app.service('api/forms').find();
       const posts = await app.service('api/posts').find();
+
+      pageContent = pageContent + '\n' + footer.pug_template;
 
       
       const echo = (text) => {
@@ -276,9 +291,11 @@ module.exports = {
       const site_title = await app.service('api/settings').get('site_title');
       const blog_page = await app.service('api/settings').get('blog_page');
       const site_header = await app.service('api/settings').get('header_content_block');
+      const site_footer = await app.service('api/settings').get('footer_content_block');
 
       // get content blocks
       const header = await app.service('api/content-blocks').get(site_header.value);
+      const footer = await app.service('api/content-blocks').get(site_footer.value);
       const page = await app.service('api/pages').get(blog_page.value);
 
       // get page sections
@@ -299,6 +316,8 @@ module.exports = {
       for ( var i in sections.data ) {
         pageContent = pageContent + '\n' + sections.data[i].block.pug_template;
       };
+
+      pageContent = pageContent + '\n' + footer.pug_template;
 
       const images = await app.service('api/images').find();
       const forms  = await app.service('api/forms').find();

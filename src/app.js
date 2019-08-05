@@ -56,6 +56,21 @@ const setup = async () => {
 
   let settings = await app.service('api/settings').find({ query: {$limit: 250} });
 
+  if(settings.total == 8) {
+    const settings = [
+      {
+        _id: "footer_content_block",
+        info: "the footer content block that will be displayed on all pages and posts",
+        value: 'default-footer'
+      },
+    ]
+    
+
+    settings.forEach(async s => {
+      await app.service('api/settings').create(s);
+    })
+  }
+
   if(settings.total == 6) {
     const settings = [
       {
@@ -143,6 +158,11 @@ const setup = async () => {
       {
         _id: 'site-header',
         title: 'Site Header',
+        pug_template: 'a(href="/admin") Click here to get started.'
+      },
+      {
+        _id: 'site-footer',
+        title: 'Site Footer',
         pug_template: 'a(href="/admin") Click here to get started.'
       },
       {
