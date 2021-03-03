@@ -60,7 +60,7 @@
     "passport-facebook": "^3.0.0",
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "pug-async": "^2.0.7",
     "q": "^1.5.1",
     "serve-favicon": "^2.5.0",
